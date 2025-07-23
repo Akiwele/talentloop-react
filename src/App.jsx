@@ -1,10 +1,25 @@
+import { Route, Routes } from "react-router";
+import LandingPage from "./pages/LandingPage";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+
+const routeTitles = {
+  "/": "TalentLoop",
+};
+
 function App() {
+  const location = useLocation();
+
+  useEffect(() => {
+    document.title = routeTitles[location.pathname] || "TalentLoop";
+  }, [location.pathname]);
+
   return (
-    <div className="h-screen flex items-center justify-center">
-      <p className="text-xl font-semibold ">
-        Hello 👋, Welcome to <span className="text-indigo-600">TalentLoop</span>
-      </p>
-    </div>
+    <>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+      </Routes>
+    </>
   );
 }
 
