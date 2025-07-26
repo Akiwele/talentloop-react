@@ -32,8 +32,8 @@ const LandingPage = () => {
             <span className="name">talentloop</span>
           </div>
           <div className="navbuttons">
-            <a href="signin.html" className="button-outline">Sign In</a>
-            <a href="signup.html" className="button-filled">Sign Up</a>
+            <a href="SignIn" className="button-outline">Sign In</a>
+            <a href="SignUp" className="button-filled">Sign Up</a>
           </div>
         </header>
         <div className="hero-text">
