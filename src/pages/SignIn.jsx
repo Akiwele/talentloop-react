@@ -1,23 +1,23 @@
 // src/pages/SignIn.jsx
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import eyeClosed from '../assets/eye closed.png';
-import eyeOpened from '../assets/eye opened.png';
-import '../styles/SignIn.css'; 
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import eyeClosed from "../assets/eye closed.png";
+import eyeOpened from "../assets/eye opened.png";
+import "../styles/SignIn.css";
 
 const SignIn = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [identifier, setIdentifier] = useState('');
-  const [password, setPassword] = useState('');
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleTogglePassword = () => {
-    setShowPassword(prev => !prev);
+    setShowPassword((prev) => !prev);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate('/ExplorePage'); // defining route in main jsx
+    navigate("/ExplorePage");
   };
 
   return (
@@ -29,7 +29,7 @@ const SignIn = () => {
         <form onSubmit={handleSubmit}>
           <label htmlFor="identifier">Email or Username</label>
           <input
-           className='input-field'
+            className="input-field"
             type="text"
             id="identifier"
             name="identifier"
@@ -42,8 +42,8 @@ const SignIn = () => {
           <label htmlFor="password">Password</label>
           <div className="password-wrapper">
             <input
-              className='password-input'
-              type={showPassword ? 'text' : 'password'}
+              className="password-input"
+              type={showPassword ? "text" : "password"}
               id="password"
               name="password"
               placeholder="Enter your password"
@@ -56,7 +56,7 @@ const SignIn = () => {
               alt="Toggle Password"
               className="toggle-icon"
               onClick={handleTogglePassword}
-              style={{ cursor: 'pointer' }}
+              style={{ cursor: "pointer" }}
             />
           </div>
 
@@ -72,7 +72,6 @@ const SignIn = () => {
             <span>or</span>
           </div>
 
-          
           <p className="signup-link">
             New user? <a href="/signup">Signup here</a>
           </p>
