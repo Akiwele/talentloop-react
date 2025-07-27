@@ -294,7 +294,7 @@ const ExplorePage = () => {
     src={currentUser.profilePicture}
     alt="Profile"
     className="current-user-avatar"
-    onClick={() => navigate("/Edit-profile")}
+    onClick={() => navigate("/EditProfile")}
     style={{ cursor: "pointer" }}
   />
 </div>
