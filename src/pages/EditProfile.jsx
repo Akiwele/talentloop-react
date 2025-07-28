@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import '../styles/EditProfile.css'; // You can reuse this CSS
+import '../styles/EditProfile.css'; 
 
 export default function EditProfilePage() {
   const navigate = useNavigate();
@@ -120,7 +120,7 @@ export default function EditProfilePage() {
           </select>
         </div>
 
-        {/* Conditional Fields */}
+        {/* Conditional Fields for users */}
         {formData.role === "teachAndLearn" && (
           <>
             <div>

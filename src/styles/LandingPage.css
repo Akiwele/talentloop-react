@@ -137,10 +137,10 @@ border:2px solid white;
   flex-wrap: wrap;
   padding: 60px;
   background-color: #f9f9f9;
-  
   gap: 40px;
-  justify-content: space-between;
+  justify-content: flex-start; 
 }
+
 
 .left-column,
 .right-column {
@@ -185,8 +185,7 @@ border:2px solid white;
   color: white !important;
   margin-bottom: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-
-
+ 
 }
 .services {
   padding: 60px 40px;
@@ -253,7 +252,10 @@ border:2px solid white;
   position: relative;
 }
 
+.faqs h2{
+  color: #673DC5;
 
+}
 
 .faq-content {
   position: relative;
@@ -303,8 +305,8 @@ border:2px solid white;
 
 .footer-socials {
   display: flex;
-  align-items: center; /* Optional: for vertical alignment */
-  margin-top: 30px; /* Moved from img to the container */
+  align-items: center; 
+  margin-top: 30px; 
 }
 
 .footer-socials a img {

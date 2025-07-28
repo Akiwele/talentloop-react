@@ -112,7 +112,7 @@
 
 .notification-item.unread {
   background-color: #e3f2fd;
-  border-left: 4px solid #2196f3;
+  border-left: 1px solid #2196f3;
 }
 
 .notification-item.unread:hover {
@@ -179,8 +179,8 @@
 
 .unread-indicator {
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: 40px;
+  right: 5px;
   width: 10px;
   height: 10px;
   background-color: #2196f3;

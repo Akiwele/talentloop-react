@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Bell, X } from 'lucide-react';
+import { Search, Bell, X, ThumbsUp, ThumbsDown } from 'lucide-react';
 import '../styles/ExplorePage.css';
 
 const ExplorePage = () => {
@@ -8,10 +8,13 @@ const ExplorePage = () => {
   const [selectedProfile, setSelectedProfile] = useState(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [sentRequests, setSentRequests] = useState([]);
-  const navigate = useNavigate(); // ✅ move here
+  const [approvedRequests, setApprovedRequests] = useState([1, 2, 3]); // Example: approved requests for demo
+  const [userRatings, setUserRatings] = useState({}); // Track user's ratings
+   const navigate = useNavigate();
+ 
 
   // Sample data for teachers/learners
-   const users = [
+  const [users, setUsers] = useState([
     {
       id: 1,
       profilePicture: 'https://images.unsplash.com/photo-1494790108755-2616b612b789?w=150&h=150&fit=crop&crop=face',
@@ -20,8 +23,8 @@ const ExplorePage = () => {
       course: 'Web Development',
       bio: 'Full-stack developer with 5+ years of experience. I love teaching modern web technologies including React, Node.js, and Python.',
       availability: 'Mon-Fri, 6:00 PM - 9:00 PM',
-      rating: 4.8,
-      reviewCount: 127
+      thumbsUpCount: 150,
+      thumbsDownCount: 12,
     },
     {
       id: 2,
@@ -31,8 +34,8 @@ const ExplorePage = () => {
       course: 'JavaScript & React',
       bio: 'Full-stack developer and coding mentor. I have been programming for over 8 years and have helped dozens of students transition into tech careers. I focus on practical, project-based learning.',
       availability: 'Evenings 7-10 PM EST',
-      rating: 4.9,
-      reviewCount: 89
+      thumbsUpCount: 150,
+      thumbsDownCount: 12,
     },
     {
       id: 3,
@@ -42,8 +45,8 @@ const ExplorePage = () => {
       course: 'Digital Art & Design',
       bio: 'Professional graphic designer and illustrator. I teach Photoshop, Illustrator, and digital painting techniques.',
       availability: 'Weekends, 10:00 AM - 4:00 PM',
-      rating: 4.7,
-      reviewCount: 156
+      thumbsUpCount: 150,
+      thumbsDownCount: 12,
     },
     {
       id: 4,
@@ -53,8 +56,8 @@ const ExplorePage = () => {
       course: 'Spanish Language',
       bio: 'Native Spanish speaker and certified language instructor. I make learning Spanish fun and interactive!',
       availability: 'Mon, Wed, Fri - 7:00 PM - 10:00 PM',
-      rating: 4.6,
-      reviewCount: 203
+      thumbsUpCount: 150,
+      thumbsDownCount: 12,
     },
     {
       id: 5,
@@ -64,8 +67,8 @@ const ExplorePage = () => {
       course: 'Piano & Music Theory',
       bio: 'Classical pianist with 15 years of teaching experience. I offer lessons for beginners to advanced students.',
       availability: 'Daily, 4:00 PM - 8:00 PM',
-      rating: 4.9,
-      reviewCount: 78
+      thumbsUpCount: 150,
+      thumbsDownCount: 12,
     },
     {
       id: 6,
@@ -75,8 +78,8 @@ const ExplorePage = () => {
       course: 'Fitness & Nutrition',
       bio: 'Certified personal trainer and nutritionist. I help people achieve their fitness goals through personalized programs.',
       availability: 'Mon-Sat, 6:00 AM - 10:00 AM',
-      rating: 4.5,
-      reviewCount: 92
+      thumbsUpCount: 150,
+      thumbsDownCount: 12,
     },
     {
       id: 7,
@@ -86,8 +89,8 @@ const ExplorePage = () => {
       course: 'Python Programming',
       bio: 'Senior software engineer at a tech startup. I specialize in Python, data science, and machine learning. Love helping beginners get started!',
       availability: 'Tue, Thu - 5:00 PM - 8:00 PM',
-      rating: 4.7,
-      reviewCount: 143
+      thumbsUpCount: 150,
+      thumbsDownCount: 12,
     },
     {
       id: 8,
@@ -97,8 +100,8 @@ const ExplorePage = () => {
       course: 'Guitar & Music Production',
       bio: 'Professional musician and producer with 10+ years experience. I teach acoustic/electric guitar and music production using Logic Pro.',
       availability: 'Mon, Wed, Fri - 3:00 PM - 7:00 PM',
-      rating: 4.8,
-      reviewCount: 201
+      thumbsUpCount: 150,
+      thumbsDownCount: 12,
     },
     {
       id: 9,
@@ -108,8 +111,8 @@ const ExplorePage = () => {
       course: 'UI/UX Design',
       bio: 'Lead UX designer at a Fortune 500 company. I teach design thinking, wireframing, prototyping, and user research methodologies.',
       availability: 'Weekends, 11:00 AM - 3:00 PM',
-      rating: 4.9,
-      reviewCount: 98
+      thumbsUpCount: 150,
+      thumbsDownCount: 12,
     },
     {
       id: 10,
@@ -119,19 +122,19 @@ const ExplorePage = () => {
       course: 'Data Analysis & Excel',
       bio: 'Business analyst with expertise in Excel, SQL, and data visualization. I help students master advanced Excel functions and data analysis.',
       availability: 'Daily, 7:00 PM - 10:00 PM',
-      rating: 4.6,
-      reviewCount: 175
+      thumbsUpCount: 150,
+      thumbsDownCount: 12,
     },
     {
-      id: 11,
+    id: 11,
       profilePicture: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face',
       username: 'maria_lang',
       name: 'Maria Garcia',
       course: 'French Language',
       bio: 'Native French speaker and certified language teacher. I make learning French enjoyable through conversation practice and cultural immersion.',
       availability: 'Mon-Thu, 6:00 PM - 9:00 PM',
-      rating: 4.8,
-      reviewCount: 267
+      thumbsUpCount: 150,
+      thumbsDownCount: 12,
     },
     {
       id: 12,
@@ -141,8 +144,8 @@ const ExplorePage = () => {
       course: 'Photography & Lightroom',
       bio: 'Professional photographer specializing in portraits and landscapes. I teach camera techniques, composition, and photo editing in Lightroom.',
       availability: 'Weekends, 9:00 AM - 1:00 PM',
-      rating: 4.7,
-      reviewCount: 134
+      thumbsUpCount: 150,
+      thumbsDownCount: 12,
     },
     {
       id: 13,
@@ -152,8 +155,8 @@ const ExplorePage = () => {
       course: 'Yoga & Meditation',
       bio: 'Certified yoga instructor with 8 years of experience. I teach various yoga styles and mindfulness meditation for stress relief and flexibility.',
       availability: 'Daily, 6:00 AM - 8:00 AM',
-      rating: 4.9,
-      reviewCount: 312
+      thumbsUpCount: 150,
+      thumbsDownCount: 12,
     },
     {
       id: 14,
@@ -163,8 +166,8 @@ const ExplorePage = () => {
       course: 'Calculus & Statistics',
       bio: 'PhD in Mathematics from MIT. I help students master calculus, statistics, and prepare for standardized tests like SAT and GRE math sections.',
       availability: 'Tue, Thu, Sat - 1:00 PM - 5:00 PM',
-      rating: 4.8,
-      reviewCount: 189
+      thumbsUpCount: 150,
+      thumbsDownCount: 12,
     },
     {
       id: 15,
@@ -174,8 +177,8 @@ const ExplorePage = () => {
       course: 'Creative Writing',
       bio: 'Published author and writing coach. I teach creative writing, storytelling techniques, and help aspiring writers develop their unique voice.',
       availability: 'Mon, Wed, Fri - 2:00 PM - 6:00 PM',
-      rating: 4.6,
-      reviewCount: 156
+      thumbsUpCount: 10,
+      thumbsDownCount: 5,
     },
     {
       id: 16,
@@ -185,8 +188,8 @@ const ExplorePage = () => {
       course: 'Chess Strategy',
       bio: 'FIDE Master with 15+ years of competitive chess experience. I teach chess strategy, tactics, and endgame techniques for all skill levels.',
       availability: 'Weekends, 2:00 PM - 6:00 PM',
-      rating: 4.7,
-      reviewCount: 223
+      thumbsUpCount: 0,
+      thumbsDownCount: 0,
     },
     {
       id: 17,
@@ -196,8 +199,8 @@ const ExplorePage = () => {
       course: 'Cooking & Baking',
       bio: 'Professional chef with culinary school training. I teach cooking fundamentals, international cuisine, and advanced baking techniques.',
       availability: 'Thu-Sun, 4:00 PM - 8:00 PM',
-      rating: 4.8,
-      reviewCount: 298
+      thumbsUpCount: 10,
+      thumbsDownCount: 1,
     },
     {
       id: 18,
@@ -207,8 +210,8 @@ const ExplorePage = () => {
       course: 'Physics & Chemistry',
       bio: 'High school science teacher with 12 years of experience. I make physics and chemistry concepts easy to understand through practical examples.',
       availability: 'Mon-Fri, 4:00 PM - 7:00 PM',
-      rating: 4.5,
-      reviewCount: 167
+      thumbsUpCount: 2,
+      thumbsDownCount: 0,
     },
     {
       id: 19,
@@ -218,8 +221,8 @@ const ExplorePage = () => {
       course: 'Business & Marketing',
       bio: 'MBA graduate and marketing director. I teach business fundamentals, digital marketing strategies, and entrepreneurship skills.',
       availability: 'Tue, Thu - 6:00 PM - 9:00 PM',
-      rating: 4.7,
-      reviewCount: 144
+      thumbsUpCount: 10,
+      thumbsDownCount: 4,
     },
     {
       id: 20,
@@ -229,10 +232,10 @@ const ExplorePage = () => {
       course: '3D Modeling & Animation',
       bio: '3D artist working in the gaming industry. I teach Blender, Maya, and 3D animation techniques for games and movies.',
       availability: 'Weekends, 10:00 AM - 2:00 PM',
-      rating: 4.9,
-      reviewCount: 87
+      thumbsUpCount: 6,
+      thumbsDownCount: 2,
     }
-  ];
+  ]);
 
   // Current user data (logged in user)
   const currentUser = {
@@ -252,16 +255,48 @@ const ExplorePage = () => {
   };
 
   const handleSendRequest = (user) => {
-  if (!sentRequests.includes(user.id)) {
-    setSentRequests((prev) => [...prev, user.id]);
-  }
-};
+    if (!sentRequests.includes(user.id)) {
+      setSentRequests((prev) => [...prev, user.id]);
+    }
+  };
 
+  const handleThumbsUp = () => {
+    if (!selectedProfile || userRatings[selectedProfile.id]) return;
+    
+    setUsers(prev => prev.map(user => 
+      user.id === selectedProfile.id 
+        ? { ...user, thumbsUpCount: user.thumbsUpCount + 1 }
+        : user
+    ));
+    
+    setUserRatings(prev => ({ ...prev, [selectedProfile.id]: 'up' }));
+    setSelectedProfile(prev => ({ ...prev, thumbsUpCount: prev.thumbsUpCount + 1 }));
+  };
 
+  const handleThumbsDown = () => {
+    if (!selectedProfile || userRatings[selectedProfile.id]) return;
+    
+    setUsers(prev => prev.map(user => 
+      user.id === selectedProfile.id 
+        ? { ...user, thumbsDownCount: user.thumbsDownCount + 1 }
+        : user
+    ));
+    
+    setUserRatings(prev => ({ ...prev, [selectedProfile.id]: 'down' }));
+    setSelectedProfile(prev => ({ ...prev, thumbsDownCount: prev.thumbsDownCount + 1 }));
+  };
 
   const handleCloseModal = () => {
     setShowProfileModal(false);
     setSelectedProfile(null);
+  };
+
+  const canRate = (userId) => {
+    return approvedRequests.includes(userId) && !userRatings[userId];
+  };
+
+  const hasRated = (userId) => {
+    return userRatings[userId];
   };
 
   return (
@@ -281,24 +316,23 @@ const ExplorePage = () => {
           </div>
 
           <div className="user-actions">
-  <div
-    className="notification-icon"
-    onClick={() => navigate("/Notifications")}
-    style={{ cursor: "pointer" }}
-  >
-    <Bell size={24} />
-    <span className="notification-badge">3</span>
-  </div>
+            <div
+              className="notification-icon"
+              onClick={() => navigate("/Notifications")}
+              style={{ cursor: "pointer" }}
+            >
+              <Bell size={24} />
+              <span className="notification-badge">3</span>
+            </div>
 
-  <img
-    src={currentUser.profilePicture}
-    alt="Profile"
-    className="current-user-avatar"
-    onClick={() => navigate("/EditProfile")}
-    style={{ cursor: "pointer" }}
-  />
-</div>
-
+            <img
+              src={currentUser.profilePicture}
+              alt="Profile"
+              className="current-user-avatar"
+              onClick={() => navigate("/EditProfile")}
+              style={{ cursor: "pointer" }}
+            />
+          </div>
         </div>
       </header>
 
@@ -369,19 +403,54 @@ const ExplorePage = () => {
               </div>
 
               <div className="rating-section">
-                <div className="rating-stars">
-                  {[...Array(5)].map((_, i) => (
-                    <span
-                      key={i}
-                      className={`star ${i < Math.floor(selectedProfile.rating) ? 'filled' : ''}`}
-                    >
-                      ★
-                    </span>
-                  ))}
+                <div className="rating-display">
+                  <span className="rating-item thumbs-up">
+                    <ThumbsUp size={16} />
+                    {selectedProfile.thumbsUpCount || 0}
+                  </span>
+                  <span className="rating-item thumbs-down">
+                    <ThumbsDown size={16} />
+                    {selectedProfile.thumbsDownCount || 0}
+                  </span>
                 </div>
-                <span className="rating-text">
-                  {selectedProfile.rating} ({selectedProfile.reviewCount} reviews)
-                </span>
+
+                {approvedRequests.includes(selectedProfile.id) && (
+                  <div className="rating-actions">
+                    {!hasRated(selectedProfile.id) ? (
+                      <>
+                        <button
+                          onClick={handleThumbsUp}
+                          className="rating-button thumbs-up-button"
+                          disabled={!canRate(selectedProfile.id)}
+                        >
+                          <ThumbsUp size={16} />
+                          Rate Positive
+                        </button>
+                        <button
+                          onClick={handleThumbsDown}
+                          className="rating-button thumbs-down-button"
+                          disabled={!canRate(selectedProfile.id)}
+                        >
+                          <ThumbsDown size={16} />
+                          Rate Negative
+                        </button>
+                      </>
+                    ) : (
+                      <div className="rated-message">
+                        <span className="rated-icon">
+                          {userRatings[selectedProfile.id] === 'up' ? '✅' : '❌'}
+                        </span>
+                        You have rated this instructor
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {!approvedRequests.includes(selectedProfile.id) && sentRequests.includes(selectedProfile.id) && (
+                  <div className="rating-note">
+                    <p>You can rate this instructor after your request is approved and you've completed a session.</p>
+                  </div>
+                )}
               </div>
 
               {sentRequests.includes(selectedProfile.id) ? (
@@ -390,13 +459,11 @@ const ExplorePage = () => {
                 </button>
               ) : (
                 <button
-  onClick={() => handleSendRequest(selectedProfile)}
-  className={`send-request-button ${sentRequests.includes(selectedProfile.id) ? 'sent' : ''}`}
-  disabled={sentRequests.includes(selectedProfile.id)}
->
-  {sentRequests.includes(selectedProfile.id) ? 'Sent' : 'Send Request'}
-</button>
-
+                  onClick={() => handleSendRequest(selectedProfile)}
+                  className="send-request-button"
+                >
+                  Send Request
+                </button>
               )}
             </div>
           </div>

@@ -1,4 +1,4 @@
-/* Reset and Base Styles */
+
 * {
   margin: 0;
   padding: 0;
@@ -17,10 +17,10 @@ body, html {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;       /* Full viewport height */
-  width: 5000vw;        /* Full viewport width */
+  height: 100vh;       /* for the full viewport height */
+  width: 5000vw;        /* for full viewport width */
   background-color: #f5f5f5;
-  padding: 20px;       /* Prevent overflow on small screens */
+  padding: 20px;       /* this is to prevent overflow on smaller screens */
   margin-left: 100px;
 }
 
@@ -144,22 +144,6 @@ label {
   font-size: 14px;
 }
 
-/* Google Login */
-.google-login {
-  background-color: #eee;
-  color: #333;
-  padding: 12px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  width: 100%;
-  margin-bottom: 20px;
-  transition: background 0.3s;
-}
-
-.google-login:hover {
-  background-color: #ddd;
-}
 
 /* Signup Link */
 .signup-link {

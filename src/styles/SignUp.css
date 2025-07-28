@@ -54,7 +54,7 @@ h2 {
   min-height: 100px;
 }
 
-/* === Photo Upload Section === */
+/* Photo Upload Section  */
 .photo-upload {
   display: flex;
   align-items: center;
@@ -88,14 +88,14 @@ h2 {
   border-radius: 50%;
 }
 
-/* === Upload Button === */
+/*  Upload Button  */
 .upload-button {
   display: inline-block;
-  padding: 4px 8px;           /* Smaller padding */
+  padding: 4px 8px;          
   border: 1px solid #6a0dad;
   color: #6a0dad;
-  border-radius: 4px;         /* Slightly smaller border radius */
-  font-size: 12px;            /* Smaller font */
+  border-radius: 4px;         
+  font-size: 12px;            
   cursor: pointer;
   transition: 0.3s;
   max-width: fit-content;
@@ -106,7 +106,7 @@ h2 {
   color: white;
 }
 
-/* === Terms and Conditions === */
+/*Terms and Conditions  */
 .terms-title {
   font-size: 18px;
   font-weight: bold;
@@ -135,7 +135,7 @@ h2 {
   transform: scale(1.2);
 }
 
-/* === Buttons === */
+/*  Buttons */
 button {
   padding: 12px;
   background-color: #6a0dad;
@@ -151,7 +151,7 @@ button:hover {
   background-color: #5a0099;
 }
 
-/* === Popup === */
+/*  Popup  */
 .popup-overlay {
   position: fixed;
   top: 0;
@@ -195,7 +195,7 @@ button:hover {
   background-color: #360062;
 }
 
-/* === Responsive === */
+/*  Responsive  */
 @media (max-width: 768px) {
   .signup-container {
     padding: 20px;
