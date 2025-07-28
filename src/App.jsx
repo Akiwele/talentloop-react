@@ -8,17 +8,14 @@ import ExplorePage from "./pages/ExplorePage";
 import Notifications from "./pages/Notifications";
 import EditProfile from "./pages/EditProfile"; 
 
-
-
 const routeTitles = {
   "/": "TalentLoop",
-  "/SignIn": "SignIn | TalentLoop",
-  "/SignUp": "SignUp | TalentLoop",
-  "/ExplorePage": "ExplorePage | TalentLoop",
-  "/Notifications": "Notifications | TalentLoop",
-  "/EditProfile": "EditProfile | TalentLoop",
+  "/signin": "SignIn | TalentLoop",
+  "/signup": "SignUp | TalentLoop",
+  "/explorepage": "ExplorePage | TalentLoop",
+  "/notifications": "Notifications | TalentLoop",
+  "/editprofile": "EditProfile | TalentLoop",
 };
-
 
 function App() {
   const location = useLocation();
@@ -30,12 +27,11 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
-      <Route path="/SignIn" element={<SignIn />} />
-      <Route path="/SignUp" element={<SignUp />} />
-      <Route path="/ExplorePage" element={<ExplorePage />} /> 
-      <Route path="/Notifications" element={<Notifications />} /> 
-      <Route path="/EditProfile" element={<EditProfile />} /> 
-
+      <Route path="/signin" element={<SignIn />} />
+      <Route path="/signup" element={<SignUp />} />
+      <Route path="/explorepage" element={<ExplorePage />} /> 
+      <Route path="/notifications" element={<Notifications />} /> 
+      <Route path="/editprofile" element={<EditProfile />} /> 
     </Routes>
   );
 }

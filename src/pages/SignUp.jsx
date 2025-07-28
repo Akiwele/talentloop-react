@@ -125,60 +125,88 @@ export default function SignUpPage() {
         </div>
 
         {formData.role === "teachAndLearn" && (
-  <>
-    <div>
-      <label>Available Time</label>
-      <input
-        type="text"
-        name="availableTimes"
-        value={formData.availableTimes}
-        onChange={handleChange}
-        placeholder="E.g., Weekdays 4pm - 6pm"
-        required
-      />
-    </div>
-    <div>
-      <label>Courses You Can Teach</label>
-      <input
-        type="text"
-        name="courses"
-        value={formData.courses}
-        onChange={handleChange}
-        placeholder="E.g., HTML, CSS, Python"
-        required
-      />
-    </div>
-  </>
-)}
+          <>
+            <div>
+              <label>Available Time</label>
+              <input
+                type="text"
+                name="availableTimes"
+                value={formData.availableTimes}
+                onChange={handleChange}
+                placeholder="E.g., Weekdays 4pm - 6pm"
+                required
+              />
+            </div>
+            <div>
+              <label>Courses You Can Teach</label>
+              <input
+                type="text"
+                name="courses"
+                value={formData.courses}
+                onChange={handleChange}
+                placeholder="E.g., HTML, CSS, Python"
+                required
+              />
+            </div>
+          </>
+        )}
 
-{/* Bio is now visible to ALL roles */}
-<div>
-  <label>Bio</label>
-  <textarea
-    name="bio"
-    value={formData.bio}
-    onChange={handleChange}
-    rows="3"
-    required
-  />
-</div>
-
+        {/* Bio is now visible to ALL roles */}
+        <div>
+          <label>Bio</label>
+          <textarea
+            name="bio"
+            value={formData.bio}
+            onChange={handleChange}
+            rows="3"
+            required
+          />
+        </div>
 
         <div>
           <h3 className="terms-title">Terms and Conditions</h3>
           <ul className="terms-list">
-            <li>You must provide accurate personal information, including a valid email address.</li>
+            <li>
+              You must provide accurate personal information, including a valid
+              email address.
+            </li>
             <li>You are responsible for all activity under your account.</li>
-            <li>You agree to be respectful and professional when connecting with other users.</li>
-            <li>Users can offer skills to teach and request skills to learn.</li>
-            <li>A connection request must be approved before any personal contact information is shared.</li>
-            <li>Once a connection request is approved, the approver’s email address will be sent to the requester to enable communication.</li>
-            <li>Users are expected to update their availability status (e.g., Available, Fully Booked) to help others make informed decisions before requesting a connection.</li>
-            <li>After a successful connection, users may give a thumbs up or thumbs down based on their experience.</li>
+            <li>
+              You agree to be respectful and professional when connecting with
+              other users.
+            </li>
+            <li>
+              Users can offer skills to teach and request skills to learn.
+            </li>
+            <li>
+              A connection request must be approved before any personal contact
+              information is shared.
+            </li>
+            <li>
+              Once a connection request is approved, the approver’s email
+              address will be sent to the requester to enable communication.
+            </li>
+            <li>
+              Users are expected to update their availability status (e.g.,
+              Available, Fully Booked) to help others make informed decisions
+              before requesting a connection.
+            </li>
+            <li>
+              After a successful connection, users may give a thumbs up or
+              thumbs down based on their experience.
+            </li>
             <li>Each user may only rate once per session.</li>
-            <li>Ratings help maintain quality and build trust in the community.</li>
-            <li>TalentLoop will only share your email with another user after you approve their request.</li>
-            <li>Your data is stored securely and is not sold or shared with third parties.</li>
+            <li>
+              Ratings help maintain quality and build trust in the community.
+            </li>
+            <li>
+              TalentLoop will only share your email with another user after you
+              approve their request.
+            </li>
+            <li>
+              Your data is stored securely and is not sold or shared with third
+              parties.
+            </li>
           </ul>
           <div className="checkbox-group">
             <input
