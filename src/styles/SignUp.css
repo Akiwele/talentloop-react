@@ -34,11 +34,11 @@ h2 {
   margin-bottom: 6px;
   font-weight: bold;
   display: block;
-  
 }
 
 .signup-form input[type="text"],
 .signup-form input[type="email"],
+.signup-form input[type="password"],
 .signup-form select,
 .signup-form textarea {
   width: 100%;
@@ -91,11 +91,11 @@ h2 {
 /*  Upload Button  */
 .upload-button {
   display: inline-block;
-  padding: 4px 8px;          
+  padding: 4px 8px;
   border: 1px solid #6a0dad;
   color: #6a0dad;
-  border-radius: 4px;         
-  font-size: 12px;            
+  border-radius: 4px;
+  font-size: 12px;
   cursor: pointer;
   transition: 0.3s;
   max-width: fit-content;
