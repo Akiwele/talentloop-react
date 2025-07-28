@@ -80,11 +80,19 @@ export default function SignUpPage() {
         username: formData.username,
         email: formData.email,
         password: formData.password,
-        role: formData.role.toUpperCase(),
-        availability: formData.availableTimes,
+        role: formData.role === "teachAndLearn" ? "LEARNANDTEACH" : "LEARNONLY",
+        availability:
+          formData.role === "teachAndLearn" ? formData.availableTimes : "",
         bio: formData.bio,
         profileUrl: cloudData.secure_url,
-        skills: formData.skills.split(",").map((s) => s.trim()),
+        skills:
+          formData.role === "teachAndLearn"
+            ? formData.skills.split(",").map((s) => s.trim())
+            : [],
+        courses:
+          formData.role === "teachAndLearn"
+            ? formData.courses.split(",").map((s) => s.trim())
+            : [],
       };
 
       const backendRes = await axios.post(`${BaseUrl}/auth/signup`, payload, {
@@ -197,18 +205,6 @@ export default function SignUpPage() {
           </div>
 
           <div>
-            <label>Your Skills</label>
-            <input
-              type="text"
-              name="skills"
-              value={formData.skills}
-              onChange={handleChange}
-              placeholder="java, linear algebra, DSA"
-              required
-            />
-          </div>
-
-          <div>
             <label>Choose Role</label>
             <select name="role" value={formData.role} onChange={handleChange}>
               <option value="learnOnly">Learn Only</option>
@@ -216,30 +212,44 @@ export default function SignUpPage() {
             </select>
           </div>
 
-          <div>
-            <label>Your Availability</label>
-            <input
-              type="text"
-              name="availableTimes"
-              value={formData.availableTimes}
-              onChange={handleChange}
-              placeholder="eg. Monday-Sunday 8:00 am - 5:00 pm"
-              required
-            />
-          </div>
-
           {formData.role === "teachAndLearn" && (
-            <div>
-              <label>Courses You Can Teach</label>
-              <input
-                type="text"
-                name="courses"
-                value={formData.courses}
-                onChange={handleChange}
-                placeholder="E.g., HTML, CSS, Python"
-                required
-              />
-            </div>
+            <>
+              <div>
+                <label>Your Skills</label>
+                <input
+                  type="text"
+                  name="skills"
+                  value={formData.skills}
+                  onChange={handleChange}
+                  placeholder="java, linear algebra, DSA"
+                  required
+                />
+              </div>
+
+              <div>
+                <label>Your Availability</label>
+                <input
+                  type="text"
+                  name="availableTimes"
+                  value={formData.availableTimes}
+                  onChange={handleChange}
+                  placeholder="eg. Monday-Sunday 8:00 am - 5:00 pm"
+                  required
+                />
+              </div>
+
+              <div>
+                <label>Courses You Can Teach</label>
+                <input
+                  type="text"
+                  name="courses"
+                  value={formData.courses}
+                  onChange={handleChange}
+                  placeholder="E.g., HTML, CSS, Python"
+                  required
+                />
+              </div>
+            </>
           )}
 
           <div>
