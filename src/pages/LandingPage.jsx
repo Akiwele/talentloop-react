@@ -7,8 +7,10 @@ import youtube from "../assets/youtube.png";
 import x from "../assets/x.png";
 import computer from "../assets/computer.png";
 import star from "../assets/Star 14.png";
+import { useNavigate } from "react-router";
 
 const LandingPage = () => {
+  const navigate = useNavigate();
   useEffect(() => {
     const handleScroll = () => {
       const navbar = document.querySelector(".navbar");
@@ -32,10 +34,10 @@ const LandingPage = () => {
             <span className="name">talentloop</span>
           </div>
           <div className="navbuttons">
-            <a href="SignIn" className="button-outline">
+            <a className="button-outline" onClick={() => navigate("/signin")}>
               Sign In
             </a>
-            <a href="SignUp" className="button-filled">
+            <a className="button-filled" onClick={() => navigate("/signup")}>
               Sign Up
             </a>
           </div>
