@@ -13,7 +13,7 @@ export default function SignUpPage() {
   const BaseUrl = import.meta.env.VITE_BACKEND_URL;
   const CloudinaryUploadUrl = `https://api.cloudinary.com/v1_1/${
     import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
-  }/upload`;
+  }/image/upload`;
   const CloudinaryUploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
   const showToast = (type, message) => {
@@ -88,10 +88,6 @@ export default function SignUpPage() {
         skills:
           formData.role === "teachAndLearn"
             ? formData.skills.split(",").map((s) => s.trim())
-            : [],
-        courses:
-          formData.role === "teachAndLearn"
-            ? formData.courses.split(",").map((s) => s.trim())
             : [],
       };
 
@@ -215,18 +211,6 @@ export default function SignUpPage() {
           {formData.role === "teachAndLearn" && (
             <>
               <div>
-                <label>Your Skills</label>
-                <input
-                  type="text"
-                  name="skills"
-                  value={formData.skills}
-                  onChange={handleChange}
-                  placeholder="java, linear algebra, DSA"
-                  required
-                />
-              </div>
-
-              <div>
                 <label>Your Availability</label>
                 <input
                   type="text"
@@ -242,8 +226,8 @@ export default function SignUpPage() {
                 <label>Courses You Can Teach</label>
                 <input
                   type="text"
-                  name="courses"
-                  value={formData.courses}
+                  name="skills"
+                  value={formData.skills}
                   onChange={handleChange}
                   placeholder="E.g., HTML, CSS, Python"
                   required
