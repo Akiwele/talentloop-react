@@ -64,7 +64,7 @@ const NotificationPage = () => {
     if (!currentUser) return;
     setIsLoading(true);
     try {
-      const res = await axios.post(
+      const res = await axios.patch(
         `${BaseUrl}/requests/update?requestId=${requestId}&userId=${currentUser?.userId}&status=${newStatus}`,
         {},
         {
