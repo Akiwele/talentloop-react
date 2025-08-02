@@ -162,7 +162,7 @@ export default function EditProfilePage() {
       <div className="signup-container">
         <button
           className="back-icon"
-          onClick={() => navigate("/ExplorePage")}
+          onClick={() => navigate("/explorepage")}
           style={{
             background: "none",
             border: "none",
