@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Bell, X, ThumbsUp, ThumbsDown, Loader2 } from "lucide-react";
+import { Search, Bell, X, ThumbsUp, ThumbsDown } from "lucide-react";
 import "../styles/ExplorePage.css";
 import axios from "axios";
 import CustomToast from "../components/CustomToast";
@@ -13,7 +13,7 @@ const ExplorePage = () => {
   const [sentRequests, setSentRequests] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [toast, setToast] = useState(null);
-  const [approvedRequests, setApprovedRequests] = useState([1, 2, 3]);
+  const [approvedRequests, setApprovedRequests] = useState([]);
   const [userRatings, setUserRatings] = useState({});
   const [requesting, setRequesting] = useState(false);
   const navigate = useNavigate();
@@ -40,12 +40,11 @@ const ExplorePage = () => {
         }
       );
 
-      if (res.status !== 200 && res.status !== 201) {
+      if (res.status === 200) {
+        setUsers(res.data.data || []);
+      } else {
         showToast("error", res.data.message || "Failed to fetch users.");
-        return;
       }
-
-      setUsers(res.data.data || []);
     } catch (error) {
       showToast("error", error?.message || "Something went wrong.");
     } finally {
@@ -53,8 +52,32 @@ const ExplorePage = () => {
     }
   };
 
+  const getApprovedRequests = async () => {
+    if (!currentUser) return;
+
+    try {
+      const res = await axios.get(
+        `${BaseUrl}/requests/approved?userId=${currentUser?.userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${currentUser?.token}`,
+          },
+        }
+      );
+
+      if (res.status === 200) {
+        const approved = res.data.data || [];
+        const approvedIds = approved.map((req) => req.receiver.id);
+        setApprovedRequests(approvedIds);
+      }
+    } catch (error) {
+      console.error("Error fetching approved requests:", error);
+    }
+  };
+
   useEffect(() => {
     getUsers();
+    getApprovedRequests();
   }, []);
 
   const filteredUsers =
@@ -73,45 +96,65 @@ const ExplorePage = () => {
     setShowProfileModal(true);
   };
 
-  const handleThumbsUp = () => {
-    if (!selectedProfile || userRatings[selectedProfile.id]) return;
-
-    setUsers((prev) =>
-      prev.map((user) =>
-        user.id === selectedProfile.id
-          ? { ...user, thumbsUpCount: user.thumbsUpCount + 1 }
-          : user
-      )
-    );
-
-    setUserRatings((prev) => ({ ...prev, [selectedProfile.id]: "up" }));
-    setSelectedProfile((prev) => ({
-      ...prev,
-      thumbsUpCount: prev.thumbsUpCount + 1,
-    }));
-  };
-
-  const handleThumbsDown = () => {
-    if (!selectedProfile || userRatings[selectedProfile.id]) return;
-
-    setUsers((prev) =>
-      prev.map((user) =>
-        user.id === selectedProfile.id
-          ? { ...user, thumbsDownCount: user.thumbsDownCount + 1 }
-          : user
-      )
-    );
-
-    setUserRatings((prev) => ({ ...prev, [selectedProfile.id]: "down" }));
-    setSelectedProfile((prev) => ({
-      ...prev,
-      thumbsDownCount: prev.thumbsDownCount + 1,
-    }));
-  };
-
   const handleCloseModal = () => {
     setShowProfileModal(false);
     setSelectedProfile(null);
+  };
+
+  const canRate = (userId) => {
+    return approvedRequests.includes(userId) && !userRatings[userId];
+  };
+
+  const hasRated = (userId) => {
+    return userRatings[userId];
+  };
+
+  const handleThumbsUp = async () => {
+    if (!selectedProfile || !canRate(selectedProfile.id)) return;
+
+    try {
+      await axios.patch(
+        `${BaseUrl}/users/like?userId=${currentUser?.userId}&instructorId=${selectedProfile.id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${currentUser?.token}`,
+          },
+        }
+      );
+
+      showToast("success", "Liked successfully!");
+      setUserRatings((prev) => ({
+        ...prev,
+        [selectedProfile.id]: "up",
+      }));
+    } catch (error) {
+      showToast("error", "Failed to like instructor.");
+    }
+  };
+
+  const handleThumbsDown = async () => {
+    if (!selectedProfile || !canRate(selectedProfile.id)) return;
+
+    try {
+      await axios.patch(
+        `${BaseUrl}/users/unlike?userId=${currentUser?.userId}&instructorId=${selectedProfile.id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${currentUser?.token}`,
+          },
+        }
+      );
+
+      showToast("success", "Disliked successfully!");
+      setUserRatings((prev) => ({
+        ...prev,
+        [selectedProfile.id]: "down",
+      }));
+    } catch (error) {
+      showToast("error", "Failed to dislike instructor.");
+    }
   };
 
   const handleSendRequest = async () => {
@@ -139,14 +182,6 @@ const ExplorePage = () => {
     } finally {
       setRequesting(false);
     }
-  };
-
-  const canRate = (userId) => {
-    return approvedRequests.includes(userId) && !userRatings[userId];
-  };
-
-  const hasRated = (userId) => {
-    return userRatings[userId];
   };
 
   return (
@@ -185,70 +220,56 @@ const ExplorePage = () => {
         </div>
       </header>
 
-      <>
-        <main className="main-content">
-          {toast && (
-            <CustomToast
-              type={toast?.type}
-              message={toast?.message}
-              duration={4000}
-              onClose={() => setToast(null)}
-            />
-          )}
-          <div className="container">
-            <div
-              className={clsx(
-                "users-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
-              )}
-            >
-              {isLoading
-                ? Array.from({ length: 6 }).map((_, index) => (
-                    <div
-                      key={index}
-                      className="user-card p-4 border w-48 animate-pulse"
-                    >
-                      <div className="user-header">
-                        <p className="username "></p>
-                      </div>
-                      <div className="user-info"></div>
-                    </div>
-                  ))
-                : filteredUsers.map((user, index) => (
-                    <div
-                      key={index}
-                      className="user-card p-4 border rounded-lg"
-                    >
-                      <div className="user-header">
-                        <img
-                          src={user?.profileImageUrl}
-                          alt={user?.username}
-                          className="user-avatar"
-                        />
-                        <p className="username">@{user?.username}</p>
-                      </div>
-                      <div className="user-info">
-                        {user?.skills?.join(", ")}
-                        <button
-                          onClick={() => handleViewProfile(user)}
-                          className="view-profile-button"
-                        >
-                          View Profile
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-            </div>
+      {toast && (
+        <CustomToast
+          type={toast?.type}
+          message={toast?.message}
+          duration={4000}
+          onClose={() => setToast(null)}
+        />
+      )}
 
-            {!isLoading && filteredUsers.length === 0 && (
-              <div className="no-results text-center text-gray-500 py-8">
-                <p>No instructors found matching your search.</p>
-              </div>
-            )}
+      <main className="main-content">
+        <div className="container">
+          <div className="users-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {isLoading
+              ? Array.from({ length: 6 }).map((_, index) => (
+                  <div
+                    key={index}
+                    className="user-card p-4 border size-52 animate-pulse"
+                  ></div>
+                ))
+              : filteredUsers.map((user, index) => (
+                  <div key={index} className="user-card p-4 border rounded-lg">
+                    <div className="user-header">
+                      <img
+                        src={user?.profileImageUrl}
+                        alt={user?.username}
+                        className="user-avatar"
+                      />
+                      <p className="username">@{user?.username}</p>
+                    </div>
+                    <div className="user-info">
+                      {user?.skills?.join(", ")}
+                      <button
+                        onClick={() => handleViewProfile(user)}
+                        className="view-profile-button"
+                      >
+                        View Profile
+                      </button>
+                    </div>
+                  </div>
+                ))}
           </div>
-        </main>
-      </>
 
-      {/* Modal remains unchanged */}
+          {!isLoading && filteredUsers.length === 0 && (
+            <div className="no-results text-center text-gray-500 py-8">
+              <p>No instructors found matching your search.</p>
+            </div>
+          )}
+        </div>
+      </main>
+
       {showProfileModal && selectedProfile && (
         <div className="modal-overlay" onClick={handleCloseModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -282,17 +303,6 @@ const ExplorePage = () => {
               </div>
 
               <div className="rating-section">
-                <div className="rating-display">
-                  <span className="rating-item thumbs-up">
-                    <ThumbsUp size={16} />
-                    {selectedProfile.thumbsUpCount || 0}
-                  </span>
-                  <span className="rating-item thumbs-down">
-                    <ThumbsDown size={16} />
-                    {selectedProfile.thumbsDownCount || 0}
-                  </span>
-                </div>
-
                 {approvedRequests.includes(selectedProfile.id) && (
                   <div className="rating-actions">
                     {!hasRated(selectedProfile.id) ? (
@@ -302,40 +312,24 @@ const ExplorePage = () => {
                           className="rating-button thumbs-up-button"
                           disabled={!canRate(selectedProfile.id)}
                         >
-                          <ThumbsUp size={16} />
-                          Rate Positive
+                          <ThumbsUp size={16} /> Like
                         </button>
                         <button
                           onClick={handleThumbsDown}
                           className="rating-button thumbs-down-button"
                           disabled={!canRate(selectedProfile.id)}
                         >
-                          <ThumbsDown size={16} />
-                          Rate Negative
+                          <ThumbsDown size={16} /> Dislike
                         </button>
                       </>
                     ) : (
-                      <div className="rated-message">
-                        <span className="rated-icon">
-                          {userRatings[selectedProfile.id] === "up"
-                            ? "✅"
-                            : "❌"}
-                        </span>
-                        You have rated this instructor
-                      </div>
+                      <p>
+                        ✅ You rated this instructor (
+                        {userRatings[selectedProfile.id]})
+                      </p>
                     )}
                   </div>
                 )}
-
-                {!approvedRequests.includes(selectedProfile.id) &&
-                  sentRequests.includes(selectedProfile.id) && (
-                    <div className="rating-note">
-                      <p>
-                        You can rate this instructor after your request is
-                        approved and you've completed a session.
-                      </p>
-                    </div>
-                  )}
               </div>
 
               <button

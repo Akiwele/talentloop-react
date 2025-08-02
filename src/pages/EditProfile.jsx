@@ -125,7 +125,7 @@ export default function EditProfilePage() {
         profileImageUrl: imageUrl,
       };
 
-      await axios.put(
+      const res = await axios.put(
         `${BaseUrl}/users/update-profile?userId=${currentUser?.userId}`,
         payload,
         {
@@ -138,6 +138,7 @@ export default function EditProfilePage() {
 
       showToast("success", "Profile updated successfully!");
       setTimeout(() => navigate("/ExplorePage"), 1500);
+      sessionStorage.setItem("tl_user", JSON.stringify(res.data.data));
     } catch (error) {
       showToast(
         "error",
