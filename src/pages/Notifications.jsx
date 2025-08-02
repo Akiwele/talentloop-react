@@ -154,7 +154,7 @@ const NotificationPage = () => {
     <div className="notification-container">
       <button
         className="back-icon"
-        onClick={() => (window.location.href = "/ExplorePage")}
+        onClick={() => (window.location.href = "/explorepage")}
       >
         <ArrowLeft size={24} />
       </button>
