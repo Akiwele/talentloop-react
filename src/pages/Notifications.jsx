@@ -10,6 +10,7 @@ const NotificationPage = () => {
   const [activeTab, setActiveTab] = useState("all");
   const [notifications, setNotifications] = useState([]);
   const [requests, setRequests] = useState([]);
+  const [connections, setConnections] = useState([]);
   const [toast, setToast] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -55,6 +56,26 @@ const NotificationPage = () => {
         }
       );
       setRequests(res.data?.data || []);
+    } catch (error) {
+      showToast("error", error.response?.data?.message || error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getConnections = async () => {
+    if (!currentUser) return;
+    setIsLoading(true);
+    try {
+      const res = await axios.get(
+        `${BaseUrl}/users/connections?userId=${currentUser?.userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${currentUser?.token}`,
+          },
+        }
+      );
+      setConnections(res.data?.data || []);
     } catch (error) {
       showToast("error", error.response?.data?.message || error.message);
     } finally {
@@ -143,13 +164,14 @@ const NotificationPage = () => {
   const getApprovedCount = () =>
     combined.filter(
       (n) => n.type === "request" && n.requestData?.status === "APPROVED"
-    ).length;
+    ).length + connections.length;
   const getRequestsCount = () =>
     combined.filter((n) => n.type === "request").length;
 
   useEffect(() => {
     getNotifications();
     getRequests();
+    getConnections();
   }, []);
 
   return (
@@ -201,6 +223,60 @@ const NotificationPage = () => {
       {isLoading ? (
         <div className="loading-state">
           <p>Loading...</p>
+        </div>
+      ) : activeTab === "approved" ? (
+        <div className="notifications-list">
+          {getFilteredNotifications().map((n) => (
+            <div key={n.id} className="notification-item">
+              <div className="notification-content">
+                <div className="notification-text">
+                  <p className="notification-message">{n.message}</p>
+                  <p className="notification-timestamp">
+                    {formatDate(n.timestamp)}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {connections.map((c) => (
+            <div key={c.id} className="notification-item">
+              <div className="notification-content">
+                <div
+                  className="notification-text"
+                  style={{ display: "flex", alignItems: "center" }}
+                >
+                  <img
+                    src={c.profileImageUrl}
+                    alt={c.username}
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      borderRadius: "50%",
+                      marginRight: "15px",
+                      objectFit: "cover",
+                    }}
+                  />
+                  <div>
+                    <p
+                      className="notification-message"
+                      style={{ marginBottom: "4px" }}
+                    >
+                      {c.username}
+                    </p>
+                    <p className="notification-timestamp">{c.email}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {getFilteredNotifications().length === 0 &&
+            connections.length === 0 && (
+              <div className="empty-state">
+                <h3>No approvals yet</h3>
+              </div>
+            )}
         </div>
       ) : (
         <div className="notifications-list">
