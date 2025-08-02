@@ -46,7 +46,10 @@ const ExplorePage = () => {
         showToast("error", res.data.message || "Failed to fetch users.");
       }
     } catch (error) {
-      showToast("error", error?.message || "Something went wrong.");
+      showToast(
+        "error",
+        error?.response?.data?.message || "Something went wrong."
+      );
     } finally {
       setIsLoading(false);
     }
