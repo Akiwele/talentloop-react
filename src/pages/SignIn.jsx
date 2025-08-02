@@ -126,8 +126,8 @@ const SignIn = () => {
               <span>or</span>
             </div>
 
-            <p className="signup-link">
-              New user? <a href="/signup">Signup here</a>
+            <p className="signup-link cursor-pointer">
+              New user? <a onClick={() => navigate("/signup")}>Signup here</a>
             </p>
           </form>
         </div>

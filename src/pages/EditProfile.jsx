@@ -137,7 +137,7 @@ export default function EditProfilePage() {
       );
 
       showToast("success", "Profile updated successfully!");
-      setTimeout(() => navigate("/ExplorePage"), 1500);
+      setTimeout(() => navigate("/explorepage"), 1500);
       sessionStorage.setItem("tl_user", JSON.stringify(res.data.data));
     } catch (error) {
       showToast(

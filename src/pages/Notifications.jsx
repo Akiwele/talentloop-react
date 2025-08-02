@@ -3,8 +3,10 @@ import { ArrowLeft } from "lucide-react";
 import "../styles/Notifications.css";
 import axios from "axios";
 import CustomToast from "../components/CustomToast";
+import { useNavigate } from "react-router";
 
 const NotificationPage = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("all");
   const [notifications, setNotifications] = useState([]);
   const [requests, setRequests] = useState([]);
@@ -152,10 +154,7 @@ const NotificationPage = () => {
 
   return (
     <div className="notification-container">
-      <button
-        className="back-icon"
-        onClick={() => (window.location.href = "/explorepage")}
-      >
+      <button className="back-icon" onClick={() => navigate("/explorepage")}>
         <ArrowLeft size={24} />
       </button>
 
