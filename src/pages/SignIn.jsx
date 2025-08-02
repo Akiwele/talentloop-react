@@ -63,7 +63,7 @@ const SignIn = () => {
         <CustomToast
           type={toast.type}
           message={toast.message}
-          duration={5000}
+          duration={4000}
           onClose={() => setToast(null)}
         />
       )}

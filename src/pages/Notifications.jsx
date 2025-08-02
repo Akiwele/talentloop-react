@@ -1,105 +1,161 @@
-import React, { useState } from 'react';
-import { ArrowLeft } from 'lucide-react';
-import '../styles/Notifications.css';
+import React, { useState, useEffect } from "react";
+import { ArrowLeft } from "lucide-react";
+import "../styles/Notifications.css";
+import axios from "axios";
+import CustomToast from "../components/CustomToast";
 
 const NotificationPage = () => {
-  const [activeTab, setActiveTab] = useState('all');
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      type: 'approval',
-      from: 'Wilson',
-      email: 'wiladdai@gmail.com',
-      message: '@Wilson has approved your request. Email: wiladdai@gmail.com',
-      timestamp: '2 hours ago',
-      read: false
-    },
-    {
-      id: 2,
-      type: 'request',
-      from: 'Sarah Johnson',
-      email: 'sarah.j@gmail.com',
-      message: 'Sarah Johnson sent you a connection request',
-      timestamp: '5 hours ago',
-      read: false
-    },
-    {
-      id: 3,
-      type: 'approval',
-      from: 'Mike Chen',
-      email: 'mike.chen@outlook.com',
-      message: '@Mike Chen has approved your request. Email: mike.chen@outlook.com',
-      timestamp: '1 day ago',
-      read: true
-    },
-    {
-      id: 4,
-      type: 'request',
-      from: 'Emily Davis',
-      email: 'emily.davis@yahoo.com',
-      message: 'Emily Davis sent you a connection request',
-      timestamp: '2 days ago',
-      read: false
-    },
-    {
-      id: 5,
-      type: 'sent_approval',
-      to: 'John Smith',
-      email: 'john.smith@gmail.com',
-      message: 'You approved John Smith\'s request. Your email was sent: your.email@gmail.com',
-      timestamp: '3 days ago',
-      read: true
-    }
-  ]);
+  const [activeTab, setActiveTab] = useState("all");
+  const [notifications, setNotifications] = useState([]);
+  const [requests, setRequests] = useState([]);
+  const [toast, setToast] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleAcceptRequest = (notificationId, fromUser, fromEmail) => {
-    // Remove the request from notifications
-    setNotifications(prev => prev.filter(n => n.id !== notificationId));
-    
-    // Add a new notification showing you approved their request
-    const newNotification = {
-      id: Date.now(),
-      type: 'sent_approval',
-      to: fromUser,
-      email: fromEmail,
-      message: `You approved ${fromUser}'s request. Your email was sent: your.email@gmail.com`,
-      timestamp: 'Just now',
-      read: true
-    };
-    
-    setNotifications(prev => [newNotification, ...prev]);
+  const currentUserString = sessionStorage.getItem("tl_user");
+  const currentUser = currentUserString ? JSON.parse(currentUserString) : null;
+  const BaseUrl = import.meta.env.VITE_BACKEND_URL;
+
+  const showToast = (type, message) => {
+    setToast({ type, message });
+    setTimeout(() => setToast(null), 3000);
   };
 
-  const handleDeclineRequest = (notificationId) => {
-    setNotifications(prev => prev.filter(n => n.id !== notificationId));
+  const getNotifications = async () => {
+    if (!currentUser) return;
+    setIsLoading(true);
+    try {
+      const res = await axios.get(
+        `${BaseUrl}/notifications/?userId=${currentUser?.userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${currentUser?.token}`,
+          },
+        }
+      );
+      setNotifications(res.data?.data || []);
+    } catch (error) {
+      showToast("error", error.response?.data?.message || error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getRequests = async () => {
+    if (!currentUser) return;
+    setIsLoading(true);
+    try {
+      const res = await axios.get(
+        `${BaseUrl}/requests/?userId=${currentUser?.userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${currentUser?.token}`,
+          },
+        }
+      );
+      setRequests(res.data?.data || []);
+    } catch (error) {
+      showToast("error", error.response?.data?.message || error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const updateRequest = async (requestId, newStatus) => {
+    if (!currentUser) return;
+    setIsLoading(true);
+    try {
+      const res = await axios.post(
+        `${BaseUrl}/requests/update?requestId=${requestId}&userId=${currentUser?.userId}&status=${newStatus}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${currentUser?.token}`,
+          },
+        }
+      );
+      showToast("success", res.data?.message || "Request updated");
+      getRequests();
+    } catch (error) {
+      showToast("error", error.response?.data?.message || error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAcceptRequest = (requestId) => {
+    updateRequest(requestId, "APPROVED");
+  };
+
+  const handleDeclineRequest = (requestId) => {
+    updateRequest(requestId, "DECLINED");
   };
 
   const markAsRead = (notificationId) => {
-    setNotifications(prev => 
-      prev.map(n => n.id === notificationId ? { ...n, read: true } : n)
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === notificationId ? { ...n, read: true } : n))
     );
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleString(undefined, {
+      dateStyle: "medium",
+      timeStyle: "short",
+    });
+  };
+
+  const combined = [
+    ...notifications.map((n, index) => ({
+      id: index + 1,
+      type: "notification",
+      message: n.message,
+      timestamp: n.createdAt,
+      read: true,
+    })),
+    ...requests.map((r) => ({
+      id: r.id,
+      type: "request",
+      message: `${r.sender.username} wants to connect`,
+      timestamp: r.sentAt,
+      read: r.status !== "PENDING",
+      requestData: r,
+    })),
+  ].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
   const getFilteredNotifications = () => {
     switch (activeTab) {
-      case 'unread':
-        return notifications.filter(n => !n.read);
-      case 'approved':
-        return notifications.filter(n => n.type === 'approval');
-      case 'requests':
-        return notifications.filter(n => n.type === 'request');
+      case "unread":
+        return combined.filter((n) => !n.read);
+      case "approved":
+        return combined.filter(
+          (n) => n.type === "request" && n.requestData?.status === "APPROVED"
+        );
+      case "requests":
+        return combined.filter((n) => n.type === "request");
       default:
-        return notifications;
+        return combined;
     }
   };
 
-  const getUnreadCount = () => notifications.filter(n => !n.read).length;
-  const getApprovedCount = () => notifications.filter(n => n.type === 'approval').length;
-  const getRequestsCount = () => notifications.filter(n => n.type === 'request').length;
+  const getUnreadCount = () => combined.filter((n) => !n.read).length;
+  const getApprovedCount = () =>
+    combined.filter(
+      (n) => n.type === "request" && n.requestData?.status === "APPROVED"
+    ).length;
+  const getRequestsCount = () =>
+    combined.filter((n) => n.type === "request").length;
+
+  useEffect(() => {
+    getNotifications();
+    getRequests();
+  }, []);
 
   return (
     <div className="notification-container">
-      <button className="back-icon" onClick={() => window.location.href = '/ExplorePage'}>
+      <button
+        className="back-icon"
+        onClick={() => (window.location.href = "/ExplorePage")}
+      >
         <ArrowLeft size={24} />
       </button>
 
@@ -109,83 +165,105 @@ const NotificationPage = () => {
 
       <div className="notification-tabs">
         <button
-          className={`tab-button ${activeTab === 'all' ? 'active' : ''}`}
-          onClick={() => setActiveTab('all')}
+          className={`tab-button ${activeTab === "all" ? "active" : ""}`}
+          onClick={() => setActiveTab("all")}
         >
-          All
-          <span className="count">{notifications.length}</span>
+          All <span className="count">{combined.length}</span>
         </button>
         <button
-          className={`tab-button ${activeTab === 'unread' ? 'active' : ''}`}
-          onClick={() => setActiveTab('unread')}
+          className={`tab-button ${activeTab === "unread" ? "active" : ""}`}
+          onClick={() => setActiveTab("unread")}
         >
           Unread
-          {getUnreadCount() > 0 && <span className="count">{getUnreadCount()}</span>}
+          {getUnreadCount() > 0 && (
+            <span className="count">{getUnreadCount()}</span>
+          )}
         </button>
         <button
-          className={`tab-button ${activeTab === 'approved' ? 'active' : ''}`}
-          onClick={() => setActiveTab('approved')}
+          className={`tab-button ${activeTab === "approved" ? "active" : ""}`}
+          onClick={() => setActiveTab("approved")}
         >
           Approved
-          {getApprovedCount() > 0 && <span className="count">{getApprovedCount()}</span>}
+          {getApprovedCount() > 0 && (
+            <span className="count">{getApprovedCount()}</span>
+          )}
         </button>
         <button
-          className={`tab-button ${activeTab === 'requests' ? 'active' : ''}`}
-          onClick={() => setActiveTab('requests')}
+          className={`tab-button ${activeTab === "requests" ? "active" : ""}`}
+          onClick={() => setActiveTab("requests")}
         >
           Requests
-          {getRequestsCount() > 0 && <span className="count">{getRequestsCount()}</span>}
+          {getRequestsCount() > 0 && (
+            <span className="count">{getRequestsCount()}</span>
+          )}
         </button>
       </div>
 
-      <div className="notifications-list">
-        {getFilteredNotifications().length === 0 ? (
-          <div className="empty-state">
-            <h3>No notifications</h3>
-            <p>You're all caught up!</p>
-          </div>
-        ) : (
-          getFilteredNotifications().map(notification => (
-            <div
-              key={notification.id}
-              className={`notification-item ${!notification.read ? 'unread' : ''}`}
-              onClick={() => !notification.read && markAsRead(notification.id)}
-            >
-              {!notification.read && <div className="unread-indicator"></div>}
-              
-              <div className="notification-content">
-                <div className="notification-text">
-                  <p className="notification-message">{notification.message}</p>
-                  <p className="notification-timestamp">{notification.timestamp}</p>
-                </div>
-
-                {notification.type === 'request' && (
-                  <div className="notification-actions">
-                    <button
-                      className="action-button accept-button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleAcceptRequest(notification.id, notification.from, notification.email);
-                      }}
-                    >
-                      Accept
-                    </button>
-                    <button
-                      className="action-button decline-button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeclineRequest(notification.id);
-                      }}
-                    >
-                      Decline
-                    </button>
-                  </div>
-                )}
-              </div>
+      {isLoading ? (
+        <div className="loading-state">
+          <p>Loading...</p>
+        </div>
+      ) : (
+        <div className="notifications-list">
+          {getFilteredNotifications().length === 0 ? (
+            <div className="empty-state">
+              <h3>No notifications</h3>
+              <p>You're all caught up!</p>
             </div>
-          ))
-        )}
-      </div>
+          ) : (
+            getFilteredNotifications().map((n) => (
+              <div
+                key={n.id}
+                className={`notification-item ${!n.read ? "unread" : ""}`}
+                onClick={() => !n.read && markAsRead(n.id)}
+              >
+                {!n.read && <div className="unread-indicator"></div>}
+
+                <div className="notification-content">
+                  <div className="notification-text">
+                    <p className="notification-message">{n.message}</p>
+                    <p className="notification-timestamp">
+                      {formatDate(n.timestamp)}
+                    </p>
+                  </div>
+
+                  {n.type === "request" && (
+                    <div className="notification-actions">
+                      <button
+                        className="action-button accept-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAcceptRequest(n.id);
+                        }}
+                      >
+                        Accept
+                      </button>
+                      <button
+                        className="action-button decline-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeclineRequest(n.id);
+                        }}
+                      >
+                        Decline
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
+      {toast && (
+        <CustomToast
+          type={toast?.type}
+          message={toast?.message}
+          duration={4000}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 };

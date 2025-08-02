@@ -3,7 +3,7 @@
 .explore-page {
   min-height: 100vh;
   background: white;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Header Styles */
@@ -21,11 +21,9 @@
   padding: 1rem 2rem;
   display: flex;
   align-items: center;
-  justify-content: space-between; 
+  justify-content: space-between;
   position: relative;
 }
-
-
 
 /* Search Bar Styles */
 .search-container {
@@ -38,7 +36,6 @@
   align-items: center;
   justify-content: center;
 }
-
 
 .search-icon {
   position: absolute;
@@ -67,7 +64,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-left: auto; 
+  margin-left: auto;
 }
 
 .notification-icon {
@@ -84,14 +81,13 @@
 
 .notification-badge {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 3px;
+  right: 3px;
   background: #ef4444;
   color: white;
-  font-size: 0.75rem;
-  padding: 0.2rem 0.4rem;
-  border-radius: 50px;
-  min-width: 1.2rem;
+  font-size: 0;
+  padding: 4px;
+  border-radius: 100%;
   text-align: center;
 }
 
@@ -123,7 +119,7 @@
 /* User Cards Grid */
 .users-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); 
+  grid-template-columns: repeat(4, 1fr);
   gap: 3rem;
 }
 
@@ -172,12 +168,17 @@
 }
 
 .user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100px;
+  justify-content: space-between;
   text-align: center;
 }
 
 .course {
   color: #374151;
-  margin: 0 0 1.5rem 0;
+
   font-weight: 500;
   font-size: 1rem;
 }
@@ -187,6 +188,7 @@
   color: white;
   border: none;
   padding: 8px 16px;
+  bottom: 0;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
@@ -199,6 +201,7 @@
 
 .no-results {
   text-align: center;
+  margin: auto;
   padding: 3rem;
   color: #666;
 }
@@ -455,35 +458,35 @@
     flex-direction: column;
     gap: 1rem;
   }
-  
+
   .search-container {
     order: 2;
     max-width: none;
   }
-  
+
   .user-actions {
     order: 1;
     align-self: flex-end;
   }
-  
+
   .users-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .modal-content {
     width: 95%;
     margin: 1rem;
   }
-  
+
   .modal-header {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .rating-actions {
     flex-direction: column;
   }
-  
+
   .rating-button {
     width: 100%;
   }
@@ -493,16 +496,16 @@
   .container {
     padding: 0 0.5rem;
   }
-  
+
   .user-card {
     padding: 1rem;
   }
-  
+
   .modal-header,
   .modal-body {
     padding: 1rem;
   }
-  
+
   .rating-display {
     flex-direction: column;
     gap: 1rem;

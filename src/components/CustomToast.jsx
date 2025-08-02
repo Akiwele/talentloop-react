@@ -33,7 +33,7 @@ const CustomToast = ({
 
   return (
     <div
-      className={`fixed top-4 right-4 z-50 transition-transform duration-300 ease-in-out transform ${
+      className={`fixed bottom-4 right-4 z-50 transition-transform duration-300 ease-in-out transform ${
         visible ? "translate-x-0 opacity-100" : "translate-x-20 opacity-0"
       } flex items-center max-w-xs rounded-lg shadow-lg text-white gap-4 ${
         bgColors[type]
