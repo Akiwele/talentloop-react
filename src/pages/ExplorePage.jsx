@@ -10,7 +10,6 @@ const ExplorePage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedProfile, setSelectedProfile] = useState(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
-  const [sentRequests, setSentRequests] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [toast, setToast] = useState(null);
   const [approvedRequests, setApprovedRequests] = useState([]);
@@ -127,10 +126,21 @@ const ExplorePage = () => {
       );
 
       showToast("success", "Liked successfully!");
+
       setUserRatings((prev) => ({
         ...prev,
         [selectedProfile.id]: "up",
       }));
+
+      const updatedProfile = {
+        ...selectedProfile,
+        likes: [...(selectedProfile.likes || []), currentUser?.userId],
+      };
+      setSelectedProfile(updatedProfile);
+
+      setUsers((prevUsers) =>
+        prevUsers.map((u) => (u.id === updatedProfile.id ? updatedProfile : u))
+      );
     } catch (error) {
       showToast("error", "Failed to like instructor.");
     }
@@ -151,10 +161,21 @@ const ExplorePage = () => {
       );
 
       showToast("success", "Disliked successfully!");
+
       setUserRatings((prev) => ({
         ...prev,
         [selectedProfile.id]: "down",
       }));
+
+      const updatedProfile = {
+        ...selectedProfile,
+        dislikes: [...(selectedProfile.dislikes || []), currentUser?.userId],
+      };
+      setSelectedProfile(updatedProfile);
+
+      setUsers((prevUsers) =>
+        prevUsers.map((u) => (u.id === updatedProfile.id ? updatedProfile : u))
+      );
     } catch (error) {
       showToast("error", "Failed to dislike instructor.");
     }
