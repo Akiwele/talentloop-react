@@ -306,6 +306,17 @@ const ExplorePage = () => {
               </div>
 
               <div className="rating-section">
+                <div className="rating-counts flex gap-4 items-center mb-2">
+                  <div className="flex items-center gap-1">
+                    <ThumbsUp size={16} />
+                    <span>{selectedProfile.likes?.length || 0}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <ThumbsDown size={16} />
+                    <span>{selectedProfile.dislikes?.length || 0}</span>
+                  </div>
+                </div>
+
                 {approvedRequests.includes(selectedProfile.id) && (
                   <div className="rating-actions">
                     {!hasRated(selectedProfile.id) ? (
